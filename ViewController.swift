@@ -24,7 +24,17 @@ class ViewController: UIViewController{
     
     @IBOutlet weak var questionScore: UILabel!
     
+    //Navigation Bar
     
+    @IBOutlet weak var questionNumber: UILabel!
+    
+    @IBAction func Back(_ sender: UIBarButtonItem) {
+        
+    }
+    
+    @IBAction func Done(_ sender: UIBarButtonItem) {
+        endQuiz()
+    }
     
     //Button Label
     
@@ -36,15 +46,16 @@ class ViewController: UIViewController{
     
     @IBOutlet weak var optionD: UIButton!
     
-    let allQuestions = QuestionBank()
-    var questionNumer: Int = 0
-    var score: Int = 0
-    var selectedAnswer: Int = 0
     
     var questions : [QuestionModel]!
     var currentQuestion = 0
     var grade = 0.0
     var quizEnded = false
+    
+    //Time
+    
+    var seconds: Int = 30
+    var timer = Timer()
     
     
     //Button Pressed
@@ -74,6 +85,8 @@ class ViewController: UIViewController{
         super.viewDidLoad()
         loadQuestions()
         startQuiz()
+        timeUp()
+        counter()
         // Do any additional setup after loading the view, typically from a nib.
     }
     
@@ -81,6 +94,24 @@ class ViewController: UIViewController{
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    func timeUp(){
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(ViewController.counter), userInfo: nil, repeats: true)
+    }
+    
+    func counter() {
+        seconds -= 1
+        questionTime.text = String(seconds)
+        if seconds == 0  {
+            timer.invalidate()
+            endQuiz()
+        }
+    }
+    
+    func timePause(){
+        timer.invalidate()
+    }
+    
     
     func loadQuestions() -> Void {
         let question1 = QuestionModel(
@@ -154,6 +185,53 @@ class ViewController: UIViewController{
             ]
             
         )
+        let question7 = QuestionModel(
+            question: "This Information _ to a great many people?",
+            img: "defautImage",
+            answers: [
+                Answer(answer: "was proved to be useful", isRight: true),
+                Answer(answer: "has proved it useful", isRight: false),
+                Answer(answer: "has been proved to be useful", isRight: false),
+                Answer(answer: "has proved useful", isRight: false)
+            ]
+            
+        )
+        
+        let question8 = QuestionModel(
+            question: "Psychiatrists are ridiculed for _ , but new research on genes and the brain suggests they might be right?",
+            img: "defautImage",
+            answers: [
+                Answer(answer: "a mental illness calling every quirk", isRight: true),
+                Answer(answer: "a calling for mental illness ever quirk", isRight: false),
+                Answer(answer: "calling mental illness an every", isRight: false),
+                Answer(answer: "calling mental illness every", isRight: false)
+            ]
+            
+        )
+        
+        let question9 = QuestionModel(
+            question: "The flamingo uses its bill _feeding to filter mud and water from the tiny plants and animals that it finds in shallow ponds.",
+            img: "defautImage",
+            answers: [
+                Answer(answer: "when", isRight: true),
+                Answer(answer: "is", isRight: false),
+                Answer(answer: "that it is", isRight: false),
+                Answer(answer: "was", isRight: false)
+            ]
+            
+        )
+        
+        let question10 = QuestionModel(
+            question: "The closer to one of the Earth's poles, the greater _ gravitational force.",
+            img: "defautImage",
+            answers: [
+                Answer(answer: "is", isRight: true),
+                Answer(answer: "the", isRight: false),
+                Answer(answer: "has", isRight: false),
+                Answer(answer: "it has", isRight: false)
+            ]
+            
+        )
         
         self.questions = [
             question1,
@@ -161,9 +239,18 @@ class ViewController: UIViewController{
             question3,
             question4,
             question5,
-            question6
+            question6,
+            question7,
+            question8,
+            question9,
+            question10
         ]
+        questionNumber.text = ("1/\(questions.count+1)")
+        questionScore.text = "0"
+        questionTime.text = "30"
+
     }
+    
     
     func startQuiz() -> Void {
         questions.shuffle()
@@ -178,6 +265,8 @@ class ViewController: UIViewController{
         resultView.isHidden = true
         
         showQuestion(0)
+        
+        
     }
     
     func showQuestion(_ questionId : Int) -> Void {
@@ -211,10 +300,11 @@ class ViewController: UIViewController{
     
     func selectAnswer(_ answerId : Int) -> Void {
         disableButtons()
-        
+        timePause()
         let answer : Answer = questions[currentQuestion].answers[answerId]
         
         if (true == answer.isRight) {
+            questionScore.text = "\(grade)"
             grade += 1.0
             resultLabel.text = answer.response + "\n\nis Correct answer!"
             resultView.backgroundColor = UIColor.green
@@ -235,9 +325,12 @@ class ViewController: UIViewController{
    
     @IBAction func resultDone(_ sender: Any) {
         resultView.isHidden = true
-
+        timeUp()
+        counter()
         if (true == quizEnded) {
             startQuiz()
+            seconds = 30
+            questionScore.text = String(0)
         } else {
             nextQuestion()
         }
@@ -246,16 +339,19 @@ class ViewController: UIViewController{
     
     func nextQuestion() {
         currentQuestion += 1
-        
         if (currentQuestion < questions.count) {
             showQuestion(currentQuestion)
         } else {
             endQuiz()
         }
+        questionNumber.text = ("\(currentQuestion+1)/\(questions.count+1)")
     }
     
     func endQuiz() {
-        grade = grade / Double(questions.count) * 100.0
+        timePause()
+        seconds = 30
+        grade = grade / Double(questions.count) * 10.0
+        questionScore.text = "\(grade)"
         quizEnded = true
         resultView.isHidden = false
         resultView.backgroundColor = UIColor.white
