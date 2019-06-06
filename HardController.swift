@@ -1,15 +1,13 @@
 //
-//  ViewController.swift
+//  HardController.swift
 //  ToiecTest
 //
-//  Created by CNTT-MAC on 6/1/19.
+//  Created by CNTT-MAC on 6/6/19.
 //  Copyright © 2019 Long-TeamDev. All rights reserved.
 //
 
 import UIKit
-
-class ViewController: UIViewController{
-    
+class HardController: UIViewController {
     @IBOutlet weak var resultView: UIView!
     
     @IBOutlet weak var resultLabel: UILabel!
@@ -25,7 +23,7 @@ class ViewController: UIViewController{
     @IBOutlet weak var questionScore: UILabel!
     
     //Navigation Bar
-
+    
     
     @IBOutlet weak var questionNumber: UILabel!
     
@@ -47,7 +45,7 @@ class ViewController: UIViewController{
     
     @IBOutlet weak var optionD: UIButton!
     
-    var allQuestions = QuestionBank()
+    var allQuestions = QuestionBankLevel3()
     
     var questions : [QuestionModel]!
     var currentQuestion = 0
@@ -191,7 +189,7 @@ class ViewController: UIViewController{
         }
         resultView.isHidden = false
     }
-   
+    
     @IBAction func resultDone(_ sender: Any) {
         resultView.isHidden = true
         timeUp()
@@ -250,5 +248,5 @@ class ViewController: UIViewController{
         resultDone.setTitle("Replay", for: UIControlState())
         grade = 0
     }
-}
 
+}
