@@ -55,7 +55,7 @@ class EasyController: UIViewController {
     
     //Time
     
-    var seconds: Int = 30
+    var seconds: Int = 60
     var timer = Timer()
     
     
@@ -122,13 +122,13 @@ class EasyController: UIViewController {
         }
         
         quizEnded = false
-        grade = 0.0
+        grade = 0
         currentQuestion = 0
         resultView.isHidden = true
         
         questionNumber.text = ("0/\(allQuestions.list.count)")
         questionScore.text = "0"
-        questionTime.text = "30"
+        questionTime.text = "60"
         
         showQuestion(0)
         
@@ -171,7 +171,7 @@ class EasyController: UIViewController {
         let answer : Answer = allQuestions.list[currentQuestion].answers[answerId]
         questionNumber.text = ("\(currentQuestion)/\(allQuestions.list.count)")
         if (true == answer.isRight) {
-            grade += 1.0
+            grade += 1
             questionScore.text = "\(grade)"
             resultLabel.text = answer.response + "\n\nis Correct answer!"
             resultView.backgroundColor = UIColor.green
@@ -197,7 +197,7 @@ class EasyController: UIViewController {
         counter()
         if (true == quizEnded) {
             startQuiz()
-            seconds = 30
+            seconds = 60
             questionScore.text = String(0)
             questionNumber.text = ("0/\(allQuestions.list.count)")
         } else {
@@ -218,24 +218,24 @@ class EasyController: UIViewController {
     
     func endQuiz() {
         timePause()
-        seconds = 30
+        seconds = 60
         var rating = ""
         var color = UIColor.black
         questionNumber.text = ("\(currentQuestion)/\(allQuestions.list.count)")
-        grade = grade * 100 / Double(allQuestions.list.count)
-        if grade < 10 {
+        let score = grade * 100 / Double(allQuestions.list.count)
+        if score < 10 {
             rating = "Poor"
             color = UIColor.darkGray
-        }  else if grade < 40 {
+        }  else if score < 40 {
             rating = "Average"
             color = UIColor.blue
-        } else if grade < 60 {
+        } else if score < 60 {
             rating = "Good"
             color = UIColor.yellow
-        } else if grade < 80 {
+        } else if score < 80 {
             rating = "Excellent"
             color = UIColor.red
-        } else if grade <= 100 {
+        } else if score <= 100 {
             rating = "Outstanding"
             color = UIColor.orange
         }
@@ -245,7 +245,7 @@ class EasyController: UIViewController {
         resultView.isHidden = false
         resultView.backgroundColor = UIColor.white
         resultLabel.textColor = color
-        resultLabel.text = "Your score \(round(grade)) \n You are \(rating) "
+        resultLabel.text = "Correct Answer: \(grade) \nYour score: \(round(score)) \n You are \(rating) "
         resultDone.setTitle("Replay", for: UIControlState())
         grade = 0
     }

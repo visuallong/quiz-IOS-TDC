@@ -54,7 +54,7 @@ class HardController: UIViewController {
     
     //Time
     
-    var seconds: Int = 30
+    var seconds: Int = 180
     var timer = Timer()
     
     
@@ -127,7 +127,7 @@ class HardController: UIViewController {
         
         questionNumber.text = ("0/\(allQuestions.list.count)")
         questionScore.text = "0"
-        questionTime.text = "30"
+        questionTime.text = "180"
         
         showQuestion(0)
         
@@ -170,7 +170,7 @@ class HardController: UIViewController {
         let answer : Answer = allQuestions.list[currentQuestion].answers[answerId]
         questionNumber.text = ("\(currentQuestion)/\(allQuestions.list.count)")
         if (true == answer.isRight) {
-            grade += 1.0
+            grade += 1
             questionScore.text = "\(grade)"
             resultLabel.text = answer.response + "\n\nis Correct answer!"
             resultView.backgroundColor = UIColor.green
@@ -196,7 +196,7 @@ class HardController: UIViewController {
         counter()
         if (true == quizEnded) {
             startQuiz()
-            seconds = 30
+            seconds = 180
             questionScore.text = String(0)
             questionNumber.text = ("0/\(allQuestions.list.count)")
         } else {
@@ -217,24 +217,24 @@ class HardController: UIViewController {
     
     func endQuiz() {
         timePause()
-        seconds = 30
+        seconds = 180
         var rating = ""
         var color = UIColor.black
         questionNumber.text = ("\(currentQuestion)/\(allQuestions.list.count)")
-        grade = grade * 100 / Double(allQuestions.list.count)
-        if grade < 10 {
+        let score = grade * 100 / Double(allQuestions.list.count)
+        if score < 10 {
             rating = "Poor"
             color = UIColor.darkGray
-        }  else if grade < 40 {
+        }  else if score < 40 {
             rating = "Average"
             color = UIColor.blue
-        } else if grade < 60 {
+        } else if score < 60 {
             rating = "Good"
             color = UIColor.yellow
-        } else if grade < 80 {
+        } else if score < 80 {
             rating = "Excellent"
             color = UIColor.red
-        } else if grade <= 100 {
+        } else if score <= 100 {
             rating = "Outstanding"
             color = UIColor.orange
         }
@@ -244,7 +244,7 @@ class HardController: UIViewController {
         resultView.isHidden = false
         resultView.backgroundColor = UIColor.white
         resultLabel.textColor = color
-        resultLabel.text = "Your score \(round(grade)) \n You are \(rating) "
+        resultLabel.text = "Correct Answer: \(grade) \nYour score: \(round(score)) \n You are \(rating) "
         resultDone.setTitle("Replay", for: UIControlState())
         grade = 0
     }
