@@ -46,6 +46,7 @@ class ViewController: UIViewController{
     
     @IBOutlet weak var optionD: UIButton!
     
+    let allQuestions = QuestionBank()
     
     var questions : [QuestionModel]!
     var currentQuestion = 0
@@ -83,7 +84,7 @@ class ViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadQuestions()
+        //loadQuestions()
         startQuiz()
         timeUp()
         counter()
@@ -100,6 +101,7 @@ class ViewController: UIViewController{
     }
     
     func counter() {
+        
         seconds -= 1
         questionTime.text = String(seconds)
         if seconds == 0  {
@@ -245,24 +247,25 @@ class ViewController: UIViewController{
             question9,
             question10
         ]
-        questionNumber.text = ("1/\(questions.count+1)")
-        questionScore.text = "0"
-        questionTime.text = "30"
-
+        
     }
     
     
     func startQuiz() -> Void {
-        questions.shuffle()
+        allQuestions.list.shuffle()
         
-        for i in 0 ..< questions.count {
-            questions[i].answers.shuffle()
+        for i in 0 ..< allQuestions.list.count {
+            allQuestions.list[i].answers.shuffle()
         }
         
         quizEnded = false
         grade = 0.0
         currentQuestion = 0
         resultView.isHidden = true
+        
+        questionNumber.text = ("0/\(allQuestions.list.count)")
+        questionScore.text = "0"
+        questionTime.text = "30"
         
         showQuestion(0)
         
@@ -272,14 +275,15 @@ class ViewController: UIViewController{
     func showQuestion(_ questionId : Int) -> Void {
         enableButtons()
         
-        let selectedQuestion : QuestionModel = questions[questionId]
+        //let selectedQuestion : QuestionModel = questions[questionId]
+        let selectedQuestion : QuestionModel = allQuestions.list[questionId]
         questionText.text = selectedQuestion.question
         questionImage.image = selectedQuestion.img
         
-        optionA.setTitle(selectedQuestion.answers[0].response, for: UIControlState())
-        optionB.setTitle(selectedQuestion.answers[1].response, for: UIControlState())
-        optionC.setTitle(selectedQuestion.answers[2].response, for: UIControlState())
-        optionD.setTitle(selectedQuestion.answers[3].response, for: UIControlState())
+        optionA.setTitle("A. "+selectedQuestion.answers[0].response, for: UIControlState())
+        optionB.setTitle("B. "+selectedQuestion.answers[1].response, for: UIControlState())
+        optionC.setTitle("C. "+selectedQuestion.answers[2].response, for: UIControlState())
+        optionD.setTitle("D. "+selectedQuestion.answers[3].response, for: UIControlState())
     }
     
     func disableButtons() -> Void {
@@ -301,11 +305,11 @@ class ViewController: UIViewController{
     func selectAnswer(_ answerId : Int) -> Void {
         disableButtons()
         timePause()
-        let answer : Answer = questions[currentQuestion].answers[answerId]
-        
+        let answer : Answer = allQuestions.list[currentQuestion].answers[answerId]
+        questionNumber.text = ("\(currentQuestion)/\(allQuestions.list.count)")
         if (true == answer.isRight) {
-            questionScore.text = "\(grade)"
             grade += 1.0
+            questionScore.text = "\(grade)"
             resultLabel.text = answer.response + "\n\nis Correct answer!"
             resultView.backgroundColor = UIColor.green
             resultLabel.textColor = UIColor.black
@@ -315,7 +319,8 @@ class ViewController: UIViewController{
             resultLabel.textColor = UIColor.white
         }
         
-        if (currentQuestion < questions.count-1) {
+        if (currentQuestion < allQuestions.list.count-1) {
+            
             resultDone.setTitle("Next", for: UIControlState())
         } else {
             resultDone.setTitle("View score", for: UIControlState())
@@ -331,6 +336,7 @@ class ViewController: UIViewController{
             startQuiz()
             seconds = 30
             questionScore.text = String(0)
+            questionNumber.text = ("0/\(allQuestions.list.count)")
         } else {
             nextQuestion()
         }
@@ -339,24 +345,43 @@ class ViewController: UIViewController{
     
     func nextQuestion() {
         currentQuestion += 1
-        if (currentQuestion < questions.count) {
+        if (currentQuestion < allQuestions.list.count) {
             showQuestion(currentQuestion)
         } else {
             endQuiz()
         }
-        questionNumber.text = ("\(currentQuestion+1)/\(questions.count+1)")
+        questionNumber.text = ("\(currentQuestion)/\(allQuestions.list.count)")
     }
     
     func endQuiz() {
         timePause()
         seconds = 30
-        grade = grade / Double(questions.count) * 10.0
+        var rating = ""
+        var color = UIColor.black
+        questionNumber.text = ("\(currentQuestion)/\(allQuestions.list.count)")
+        grade = grade * 100 / Double(allQuestions.list.count)
+        if grade < 1 {
+            rating = "Poor"
+            color = UIColor.darkGray
+        }  else if grade < 40 {
+            rating = "Average"
+            color = UIColor.blue
+        } else if grade < 60 {
+            rating = "Good"
+            color = UIColor.yellow
+        } else if grade < 80 {
+            rating = "Excellent"
+            color = UIColor.red
+        } else if grade <= 100 {
+            rating = "Outstanding"
+            color = UIColor.orange
+        }
         questionScore.text = "\(grade)"
         quizEnded = true
         resultView.isHidden = false
         resultView.backgroundColor = UIColor.white
-        resultLabel.textColor = UIColor.black
-        resultLabel.text = "Your score \(round(grade))"
+        resultLabel.textColor = color
+        resultLabel.text = "Your score \(round(grade)) \n You are \(rating) "
         resultDone.setTitle("Replay", for: UIControlState())
     }
 }
