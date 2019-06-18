@@ -10,7 +10,7 @@ import UIKit
 import Darwin
 
 class HomeLanch: UIViewController {
-    
+    //demo
     @IBAction func btnHelp(_ sender: UIButton) {
         let alert = UIAlertController(title: "Helps", message: "B1. Click Play \n B2. Choise Level \n B3. Play and realize how bad your English is", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Done", style: .default, handler: nil))
