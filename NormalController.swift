@@ -9,7 +9,7 @@
 import UIKit
 
 class NormalController: UIViewController {
-    
+    //testtest
     @IBOutlet weak var resultView: UIView!
     
     @IBOutlet weak var resultLabel: UILabel!
